@@ -1,0 +1,1 @@
+Create a summary of what was being done in this current branch during last couple of sessions. Be ADHD friendly
