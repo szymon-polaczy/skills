@@ -2,7 +2,7 @@
 
 **Workers use the 3 verdicts in report-worker-playbook.md** — do not read this file unless master is investigating **required more research** items.
 
-Quick map: `skip` → **skipped** | new origin needed → **added** | already in CSP → **required more research**
+Quick map: `skip` → **skipped** | absent from CSP excerpt → **added** | in CSP excerpt but still reporting post-deploy → **required more research** (never “covered, done”)
 
 ---
 
@@ -51,9 +51,11 @@ Ask the user one line: “Report blocks `{uri}` on `{page}` — is this a vendor
 
 ---
 
-## Step 3 — Already in CSP? Check redirects first
+## Step 3 — In CSP excerpt but still reporting (Pass 2, not “done”)
 
-**If the blocked host (or its obvious parent) is already allowlisted, do not duplicate it.** The violation is almost certainly a **redirect or subdomain variant**.
+**Post-deploy rule:** If the blocked host (or wildcard) appears in the CSP excerpt, Pass 1 must be **required more research** — the deploy did not stop the report.
+
+Pass 2 then investigates; do not duplicate an existing origin blindly. Likely causes:
 
 ### Common patterns
 

@@ -8,7 +8,7 @@
 |-------|-------|
 | **CSP source** | `{file:line}` |
 | **Production URL** | `{https://...}` |
-| **GlitchTip** | `{https://...}` |
+| **GlitchTip** | `{https://...}` — CSP-only project/view; scrape this URL as-is (no search-bar filters) |
 
 Queue: **`csp-reports-queue.md`**
 
@@ -47,7 +47,7 @@ Queue: **`csp-reports-queue.md`**
 
 ## Monitor post-deploy
 
-{N} issues — CSP updated or already covered. Residual reports likely **redirect false positives** (browser reports pre-redirect URL). Re-check GlitchTip after prod deploy; no further allowlist work unless new hosts appear in Network tab.
+{N} issues — **still reporting after last deploy**; Pass 2 investigated each. Outcomes: wildcard/`img-src` fix applied, or documented **redirect / pre-redirect URL / adblock** noise per vendor docs. Not closed as “already covered.” Re-check GlitchTip after next deploy; new hosts in Network tab → new **added** cycle.
 
 ---
 

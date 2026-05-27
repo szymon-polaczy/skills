@@ -2,6 +2,8 @@
 
 Runs **immediately after** Pass 1 CSP edits. **No user prompt** — master researches, applies wildcard hardening, updates `csp.md`, delivers one final handoff.
 
+**Input assumption:** Every **`required more research`** line is a **post-deploy** report. “Already in CSP” in Pass 1 means “policy insufficient or reporting artifact” — not “skip investigation.”
+
 User may review **Security tradeoffs** at the end; optional follow-up only for **architectural** items.
 
 ---
@@ -64,9 +66,11 @@ Apply across `script-src`, `connect-src`, `img-src` where that vendor appears �
 
 Pass 1 may have added `www.googleadservices.com` — Pass 2 checks if `*.googlesyndication.com` or vendor wildcard already covers it; **consolidate** toward wildcards when docs recommend.
 
-### Rule C — known redirects (reclassify as monitor, not new host)
+### Rule C — post-deploy persistence (redirect / reporting artifact)
 
-Do **not** add a host if research explains report as redirect noise:
+Applies to Pass 1 items tagged **required more research** because the host matched the excerpt. **Investigate first** — then either apply a real fix (missing wildcard, `img-src` gap, redirect target) or re-tag **monitor** with a one-line why.
+
+Do **not** add a duplicate host if research explains persistence without a new allowlist entry:
 
 | Reported | Likely real failure / note |
 |----------|----------------------------|
@@ -121,10 +125,10 @@ Update Pass 1 **`required more research`** lines:
 
 | After Pass 2 | Meaning |
 |--------------|---------|
-| **monitor** | Vendor pattern applied or already covered; expect redirect/adblock noise post-deploy |
+| **monitor** | Pass 2 fix applied **or** documented vendor/redirect reporting artifact for a **post-deploy** issue — must cite cause (not “was in CSP”) |
 | **required more research** | Architectural only — user optional follow-up |
 
-Rewrite queue verdict inline — do not leave stale `required more research` on vendor items that got wildcard fixes.
+Rewrite queue verdict inline. Vendor items get **monitor** only after investigation + optional CSP edit — not because Pass 1 matched the excerpt.
 
 ---
 

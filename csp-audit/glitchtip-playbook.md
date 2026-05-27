@@ -2,11 +2,29 @@
 
 Goal: fill `csp-reports-queue.md` with **URL + blocked URI + directive** from the **list page only**. No per-issue navigation.
 
+**Triage assumption:** every scraped issue is **post–last CSP deploy** — see [report-worker-playbook.md](report-worker-playbook.md) post-deploy rules.
+
+---
+
+## URL — do not filter in the UI
+
+The user’s issues-list URL is already scoped to **CSP reports only** (dedicated GlitchTip project or saved view). That URL is the full filter.
+
+**Never** use the GlitchTip search bar or `browser_type` to enter Sentry-style queries, for example:
+
+- `is:unresolved Content Security Policy violation`
+- `Content Security Policy`
+- Any variant that re-filters by CSP text
+
+**Do:** `browser_navigate` to the user URL as-is → scrape rows → paginate.
+
+**Do not:** `curl` GlitchTip API, append `query=` for CSP keywords, or “helpfully” narrow results after load.
+
 ---
 
 ## Steps
 
-1. `browser_navigate` → issues list URL → login gate if form
+1. `browser_navigate` → **exact** user-provided issues list URL (no search-bar edits) → login gate if form
 2. For each page of results:
    - Prefer **`browser_cdp` `Runtime.evaluate`** to dump all rows in one call:
 

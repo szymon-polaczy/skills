@@ -32,15 +32,30 @@ One model turn should process all 25 — do not spawn subagents per URL.
 
 ---
 
-## CSP match check (for "required more research")
+## Post-deploy triage (mandatory)
 
-Blocked host already covered if CSP excerpt contains any of:
+**All queue issues = after last CSP deploy.** Matching the excerpt does **not** close the item.
 
-- Exact origin `https://host`
-- Wildcard covering host (`*.linkedin.com` covers `psx4.linkedin.com`)
-- **Not** covered: `*.google.com` does **not** cover `google.co.uk` → that's **added** or **required more research** if `google.com` literal exists
+### Verdict decision tree
 
-When parent brand is in CSP but host differs (google.com vs google.de, psx vs psx4) → **required more research** with one line noting mismatch type.
+1. **skipped** — attack/junk only (see below). Not “vendor we use but annoying.”
+2. **added** — legit vendor; blocked host **not** in CSP excerpt for **that directive** (exact origin or wildcard that actually matches the host per CSP3 rules).
+3. **required more research** — everything else that is not skip, including:
+   - Host **is** in excerpt (exact or wildcard) but GlitchTip still shows the issue → **always** research (redirect, wrong directive, `img-src` vs `connect-src`, pre-redirect reporting, stale cache — do not mark “covered”)
+   - Parent brand in CSP but host differs (`google.com` vs `google.de`, `psx` vs `psx4`) → research with mismatch type in one line
+   - `*.google.com` does **not** cover `google.co.uk` → **added** if truly missing; **required more research** if `google.com` literal exists but TLD variant reports
+
+**Forbidden in Pass 1:** verdicts like “already covered”, “no change”, “CSP has this host — done”. Those belong in Pass 2 after vendor/redirect investigation.
+
+### CSP excerpt match (for routing only — not closure)
+
+Use excerpt only to choose **added** vs **required more research**:
+
+| Excerpt | Post-deploy report | Pass 1 verdict |
+|---------|-------------------|----------------|
+| No match for directive | Legit vendor | **added** |
+| Match (exact or wildcard) | Still in GlitchTip | **required more research** — “in CSP, still reporting” |
+| Partial parent only | Still in GlitchTip | **required more research** — note mismatch type |
 
 ---
 
